@@ -7,9 +7,7 @@ function App() {
 
   return (
     <div className="App">
-      <PostItem/>
-      <PostItem/>
-      <PostItem/>
+      <PostItem post={{id: 1, title: "Тестовый пост", body: "Это просто текст поста"}}/>
     </div>
   );
 }
