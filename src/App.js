@@ -7,6 +7,9 @@ function App() {
   return (
     <div className="App">
       <Counter/>
+      <Counter/>
+      <Counter/>
+      <Counter/>
     </div>
   );
 }
