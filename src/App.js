@@ -11,6 +11,7 @@ function App() {
     {id: 3, title: "Python", body: "Любимый язык"},
     {id: 4, title: "Yoohooo", body: "Текст поста"},
   ])
+  const [selectedSort, setSelectedSort] = useState('')
 
   const createPost = (newPost) => {
     setPosts([...posts,  newPost])
@@ -22,13 +23,24 @@ function App() {
     setPosts(posts.filter(p => p.id !== post.id))
   }
 
+  const sortPosts = (sort) => {
+    // sort содержит либо поле title, либо body
+    setSelectedSort(sort);
+    // Сортируем копию массива - для этого надо его развернуть ([...posts])
+    // Для сортировки используется функция localeCompare, которая сравнивает строки
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare
+    setPosts([...posts].sort((a, b) => a[sort].localeCompare(b[sort])));
+  }
+
   return (
     <div className="App">
       <PostForm create={createPost}/>
       <hr style={{margin: '15px 0'}}/>
       <div>
         <MySelect
-          defaultValue="Сортировка по"
+          value={selectedSort}
+          onChange={sortPosts}
+          defaultValue="Сортировка по..."
           options={[
             {value: 'title', name: 'По названию'},
             {value: 'body', name: 'По описанию'},
