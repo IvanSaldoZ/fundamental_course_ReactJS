@@ -23,7 +23,8 @@ function App() {
       body
     }
     setPosts([...posts, newPost])
-    console.log(newPost)
+    setTitle('');
+    setBody('');
   }
 
   return (
