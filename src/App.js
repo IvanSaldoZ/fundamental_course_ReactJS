@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useMemo, useState} from "react";
 import './styles/App.css';
 import PostsList from "./components/PostsList";
 import PostForm from "./components/PostForm";
@@ -15,19 +15,19 @@ function App() {
   const [selectedSort, setSelectedSort] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
 
-  function getSelectedSort() {
+  // хук useMemo кэширует состояние переменной и перечитывает это значение только тогда,
+  // когда изменились dependencies (deps) - свойства, т.е. второй аргумент хука useMemo
+  const sortedPosts = useMemo(() => {
     console.log('Функция getSelectedSort отработала')
     // Если не пустая строка
     if (selectedSort) {
+      // Сортируем копию массива - для этого надо его развернуть ([...posts])
+      // Для сортировки используется функция localeCompare, которая сравнивает строки
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare
       return [...posts].sort((a, b) => a[selectedSort].localeCompare(b[selectedSort]))
     }
     return posts
-  }
-
-  // Сортируем копию массива - для этого надо его развернуть ([...posts])
-  // Для сортировки используется функция localeCompare, которая сравнивает строки
-  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare
-  const sortedPosts = getSelectedSort()
+  }, [selectedSort, posts])
 
   const createPost = (newPost) => {
     setPosts([...posts,  newPost])
