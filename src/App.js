@@ -3,6 +3,7 @@ import './styles/App.css';
 import PostsList from "./components/PostsList";
 import PostForm from "./components/PostForm";
 import MySelect from "./components/UI/select/MySelect";
+import MyInput from "./components/UI/input/MyInput";
 
 function App() {
   const [posts, setPosts] = useState([
@@ -12,6 +13,21 @@ function App() {
     {id: 4, title: "Yoohooo", body: "Текст поста"},
   ])
   const [selectedSort, setSelectedSort] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
+
+  function getSelectedSort() {
+    console.log('Функция getSelectedSort отработала')
+    // Если не пустая строка
+    if (selectedSort) {
+      return [...posts].sort((a, b) => a[selectedSort].localeCompare(b[selectedSort]))
+    }
+    return posts
+  }
+
+  // Сортируем копию массива - для этого надо его развернуть ([...posts])
+  // Для сортировки используется функция localeCompare, которая сравнивает строки
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare
+  const sortedPosts = getSelectedSort()
 
   const createPost = (newPost) => {
     setPosts([...posts,  newPost])
@@ -26,10 +42,6 @@ function App() {
   const sortPosts = (sort) => {
     // sort содержит либо поле title, либо body
     setSelectedSort(sort);
-    // Сортируем копию массива - для этого надо его развернуть ([...posts])
-    // Для сортировки используется функция localeCompare, которая сравнивает строки
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare
-    setPosts([...posts].sort((a, b) => a[sort].localeCompare(b[sort])));
   }
 
   return (
@@ -37,6 +49,11 @@ function App() {
       <PostForm create={createPost}/>
       <hr style={{margin: '15px 0'}}/>
       <div>
+        <MyInput
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          placeholder="Поиск..."
+        />
         <MySelect
           value={selectedSort}
           onChange={sortPosts}
@@ -48,7 +65,7 @@ function App() {
         />
       </div>
       {posts.length !== 0
-        ? <PostsList remove={removePost} posts={posts} title="Список постов"/>
+        ? <PostsList remove={removePost} posts={sortedPosts} title="Список постов"/>
         : <h1 style={{textAlign: 'center'}}>Посты не найдены</h1>
       }
     </div>
