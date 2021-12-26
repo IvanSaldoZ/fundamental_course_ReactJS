@@ -18,7 +18,6 @@ function App() {
   // хук useMemo кэширует состояние переменной и перечитывает это значение только тогда,
   // когда изменились dependencies (deps) - свойства, т.е. второй аргумент хука useMemo
   const sortedPosts = useMemo(() => {
-    console.log('Функция getSelectedSort отработала')
     // Если не пустая строка
     if (selectedSort) {
       // Сортируем копию массива - для этого надо его развернуть ([...posts])
@@ -28,6 +27,10 @@ function App() {
     }
     return posts
   }, [selectedSort, posts])
+
+  const sortedAdnSearchedPosts = useMemo(() => {
+    return sortedPosts.filter(post => post.title.toLowerCase().includes(searchQuery.toLowerCase()))
+  }, [searchQuery, sortedPosts])
 
   const createPost = (newPost) => {
     setPosts([...posts,  newPost])
@@ -64,8 +67,8 @@ function App() {
           ]}
         />
       </div>
-      {posts.length !== 0
-        ? <PostsList remove={removePost} posts={sortedPosts} title="Список постов"/>
+      {sortedAdnSearchedPosts.length !== 0
+        ? <PostsList remove={removePost} posts={sortedAdnSearchedPosts} title="Список постов"/>
         : <h1 style={{textAlign: 'center'}}>Посты не найдены</h1>
       }
     </div>
