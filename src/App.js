@@ -6,6 +6,7 @@ import PostFilter from "./components/PostFilter";
 import MyModal from "./components/UI/modal/MyModal";
 import MyButton from "./components/UI/button/MyButton";
 import {usePosts} from "./hooks/usePosts";
+import axios from 'axios';
 
 function App() {
   const [posts, setPosts] = useState([
@@ -23,6 +24,11 @@ function App() {
     setModal(false);
   }
 
+  async function fetchPosts() {
+    const response = await axios.get('https://jsonplaceholder.typicode.com/posts')
+    setPosts(response.data)
+  }
+
   // Пост получаем из дочернего компонента
   const removePost = (post) => {
     // filter возвращает копию массива, отфильтрованного по какому-то условию
@@ -31,6 +37,9 @@ function App() {
 
   return (
     <div className="App">
+      <MyButton onClick={fetchPosts}>
+        Получить данные
+      </MyButton>
       <MyButton style={{marginTop: '30px'}} onClick={() => setModal(true)}>
         Создать пост
       </MyButton>
