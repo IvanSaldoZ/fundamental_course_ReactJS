@@ -3,6 +3,8 @@ import './styles/App.css';
 import PostsList from "./components/PostsList";
 import PostForm from "./components/PostForm";
 import PostFilter from "./components/PostFilter";
+import MyModal from "./components/UI/modal/MyModal";
+import MyButton from "./components/UI/button/MyButton";
 
 function App() {
   const [posts, setPosts] = useState([
@@ -12,6 +14,7 @@ function App() {
     {id: 4, title: "Yoohooo", body: "Текст поста"},
   ])
   const [filter, setFilter] = useState({sort: '', query: ''})
+  const [modal, setModal] = useState(false)
 
   // хук useMemo кэширует состояние переменной и перечитывает это значение только тогда,
   // когда изменились dependencies (deps) - свойства, т.е. второй аргумент хука useMemo
@@ -32,6 +35,7 @@ function App() {
 
   const createPost = (newPost) => {
     setPosts([...posts,  newPost])
+    setModal(false);
   }
 
   // Пост получаем из дочернего компонента
@@ -42,8 +46,12 @@ function App() {
 
   return (
     <div className="App">
-      <PostForm create={createPost}/>
-      <hr style={{margin: '15px 0'}}/>
+      <MyButton style={{marginTop: '30px'}} onClick={() => setModal(true)}>
+        Создать пост
+      </MyButton>
+      <MyModal visible={modal} setVisible={setModal}>
+        <PostForm create={createPost}/>
+      </MyModal>
       <PostFilter filter={filter} setFilter={setFilter}/>
       <PostsList remove={removePost} posts={sortedAdnSearchedPosts} title="Список постов"/>
     </div>
