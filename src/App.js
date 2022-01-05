@@ -9,12 +9,7 @@ import {usePosts} from "./hooks/usePosts";
 import PostService from "./API/PostService";
 
 function App() {
-  const [posts, setPosts] = useState([
-    {id: 1, title: "Тестовый пост", body: "Это просто текст поста"},
-    {id: 2, title: "JavaScript", body: "Это фронт"},
-    {id: 3, title: "Python", body: "Любимый язык"},
-    {id: 4, title: "Yoohooo", body: "Текст поста"},
-  ])
+  const [posts, setPosts] = useState([])
   const [filter, setFilter] = useState({sort: '', query: ''})
   const [modal, setModal] = useState(false)
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query)
