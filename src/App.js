@@ -33,7 +33,7 @@ function App() {
 
   useEffect(() => {
     fetchPosts()
-  }, [])
+  }, [page])
 
 
   const createPost = (newPost) => {
