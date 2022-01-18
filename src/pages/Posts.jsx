@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import '../styles/App.css';
 import PostsList from "../components/PostsList";
 import PostForm from "../components/PostForm";
@@ -11,6 +11,7 @@ import Loader from "../components/UI/loader/Loader";
 import {useFetching} from "../hooks/useFetching";
 import {getPageCount} from "../utils/pages";
 import Pagination from "../components/UI/pagination/Pagination";
+import {useObserver} from "../hooks/useObserver";
 
 function Posts() {
   const [posts, setPosts] = useState([])
@@ -22,12 +23,17 @@ function Posts() {
   const [page, setPage] = useState(1);
   const [fetchPosts, isLoading, postError] = useFetching(async () => {
     const response = await PostService.getAll(limit, page);
-    setPosts(response.data);
+    setPosts([...posts, ...response.data]);
     const totalCount = response.headers['x-total-count'];
     setTotalPages(getPageCount(totalCount, limit));
   })
-  console.log(totalPages);
+  // Последний элемент для бесконечной прокрутки
+  const lastElement = useRef()
+  console.log(lastElement);
 
+  useObserver(lastElement, page < totalPages, isLoading, () => {
+    setPage(page + 1);
+  })
 
   useEffect(() => {
     fetchPosts()
@@ -63,9 +69,10 @@ function Posts() {
           <h2>{postError}</h2>
         </div>
       }
-      {isLoading
-        ? <div style={{display: "flex", justifyContent: "center", marginTop: 50}}><Loader/></div>
-        : <PostsList remove={removePost} posts={sortedAndSearchedPosts} title="Список постов"/>
+      <PostsList remove={removePost} posts={sortedAndSearchedPosts} title="Список постов"/>
+      <div ref={lastElement} style={{height: 20, background: 'red'}}/>
+      {isLoading &&
+        <div style={{display: "flex", justifyContent: "center", marginTop: 50}}><Loader/></div>
       }
       <Pagination page={page} totalPages={totalPages} setPage={setPage}/>
     </div>
